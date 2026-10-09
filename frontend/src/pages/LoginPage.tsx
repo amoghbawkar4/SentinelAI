@@ -7,7 +7,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
-const employeeRoles = ['Employee', 'Manager', 'HR', 'Payroll Administrator', 'Security Analyst'] as const;
+import { employeeRoles } from '../utils/roleRouting';
+const employeeRoleOptions = ['Employee', 'Manager', 'HR', 'Payroll Administrator', 'Security Analyst'] as const;
 const schema = z.object({ email: z.string().email('Enter a valid email'), password: z.string().min(1, 'Enter your password'), login_as: z.string().optional(), remember_me: z.boolean().optional() });
 type FormValues = z.infer<typeof schema>;
 
@@ -27,7 +28,7 @@ export default function LoginPage({ portal }: { portal: 'employee' | 'administra
     <div className="mb-6 flex items-center gap-3"><div className="rounded-2xl bg-blue-500/20 p-3 text-blue-400"><ShieldCheck size={24} /></div><div><h1 className="text-2xl font-semibold">SentinelAI</h1><p className="text-sm text-slate-400">{employeePortal ? 'Employee Workspace' : 'Administrator Console'}</p></div></div>
     <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
       <label className="block text-sm text-slate-300"><span className="mb-2 block">Email</span><div className="flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-950/70 px-3 py-3"><Mail size={16} className="text-slate-500" /><input {...register('email', { onChange: () => setLoginError('') })} className="w-full bg-transparent outline-none" /></div>{errors.email && <p className="mt-1 text-sm text-rose-400">{errors.email.message}</p>}</label>
-      {employeePortal && <label className="block text-sm text-slate-300"><span className="mb-2 block">Login As</span><select {...register('login_as', { onChange: () => setLoginError('') })} className="w-full rounded-xl border border-slate-800 bg-slate-950/70 px-3 py-3 outline-none">{employeeRoles.map((role) => <option key={role}>{role}</option>)}</select></label>}
+      {employeePortal && <label className="block text-sm text-slate-300"><span className="mb-2 block">Login As</span><select {...register('login_as', { onChange: () => setLoginError('') })} className="w-full rounded-xl border border-slate-800 bg-slate-950/70 px-3 py-3 outline-none">{employeeRoleOptions.filter((role) => employeeRoles.has(role)).map((role) => <option key={role}>{role}</option>)}</select></label>}
       <label className="block text-sm text-slate-300"><span className="mb-2 block">Password</span><div className="flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-950/70 px-3 py-3"><Lock size={16} className="text-slate-500" /><input type={showPassword ? 'text' : 'password'} {...register('password', { onChange: () => setLoginError('') })} className="w-full bg-transparent outline-none" /><button type="button" onClick={() => setShowPassword((value) => !value)} className="text-slate-500">{showPassword ? <EyeOff size={16} /> : <Eye size={16} />}</button></div>{errors.password && <p className="mt-1 text-sm text-rose-400">{errors.password.message}</p>}</label>
       <label className="flex items-center gap-2 text-sm text-slate-400"><input type="checkbox" {...register('remember_me')} /> Remember me</label><button disabled={isSubmitting} className="w-full rounded-xl bg-blue-500 px-4 py-3 font-medium text-white disabled:opacity-70">{isSubmitting ? 'Signing in...' : 'Sign In'}</button>
     </form>

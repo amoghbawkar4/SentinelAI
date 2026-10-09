@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import type { AuthResponse, LoginPayload, RegisterPayload, User } from '../types/auth';
+import { getPostLoginRoute } from '../utils/roleRouting';
 
 interface AuthContextType {
   user: User | null;
@@ -40,7 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('refresh_token', response.data.refresh_token);
     const profile = await api.get('/auth/me');
     setUser(profile.data);
-    navigate(profile.data.role_name === 'SentinelAI Administrator' ? '/dashboard' : '/employee', { replace: true });
+    navigate(getPostLoginRoute(profile.data.role_name), { replace: true });
   };
 
   const register = async (payload: RegisterPayload) => {

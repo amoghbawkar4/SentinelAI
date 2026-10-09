@@ -14,13 +14,23 @@ import ErrorPage from '../pages/ErrorPage';
 import LandingPage from '../pages/LandingPage';
 import EmployeeWorkspacePage from '../pages/EmployeeWorkspacePage';
 import InvestigationPage from '../pages/InvestigationPage';
+import ChooseWorkspacePage from '../pages/ChooseWorkspacePage';
+import DocumentIngestionPage from '../pages/DocumentIngestionPage';
 import { useAuth } from '../contexts/AuthContext';
+import { employeeRoles, getPostLoginRoute, workspaceRoles } from '../utils/roleRouting';
 
 function EmployeeRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   if (loading) return null;
   if (!user) return <Navigate to="/login" replace />;
-  return user.role_name === 'SentinelAI Administrator' ? <Navigate to="/403" replace /> : <>{children}</>;
+  return employeeRoles.has(user.role_name) ? <>{children}</> : <Navigate to={getPostLoginRoute(user.role_name)} replace />;
+}
+
+function WorkspaceRoute({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (!user) return <Navigate to="/login" replace />;
+  return workspaceRoles.has(user.role_name) ? <>{children}</> : <Navigate to={getPostLoginRoute(user.role_name)} replace />;
 }
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -35,6 +45,8 @@ export default function AppRoutes() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/employee" element={<EmployeeRoute><EmployeeWorkspacePage /></EmployeeRoute>} />
+      <Route path="/choose-workspace" element={<WorkspaceRoute><ChooseWorkspacePage /></WorkspaceRoute>} />
+      <Route path="/document-ingestion" element={<WorkspaceRoute><DocumentIngestionPage /></WorkspaceRoute>} />
       <Route element={<PublicLayout />}>
         <Route path="/login" element={<LoginPage portal="employee" />} />
         <Route path="/admin/login" element={<LoginPage portal="administrator" />} />
