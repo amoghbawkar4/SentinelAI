@@ -23,6 +23,13 @@ class Settings:
     openai_model: str = os.getenv("OPENAI_MODEL", "gpt-4.1-mini")
     openai_timeout_seconds: int = int(os.getenv("OPENAI_TIMEOUT_SECONDS", 30))
     openai_retry_count: int = int(os.getenv("OPENAI_RETRY_COUNT", 1))
+    document_storage_dir: str = os.getenv("DOCUMENT_STORAGE_DIR", str(Path(__file__).resolve().parents[2] / "data" / "uploads"))
+    max_upload_size_mb: int = int(os.getenv("MAX_UPLOAD_SIZE_MB", 10))
+    allowed_document_extensions: list[str] = os.getenv("ALLOWED_DOCUMENT_EXTENSIONS", ".pdf,.doc,.docx,.txt,.md,.csv,.xlsx").split(",")
+
+    @property
+    def max_document_size_bytes(self) -> int:
+        return self.max_upload_size_mb * 1024 * 1024
 
     def __init__(self) -> None:
         if not self.postgres_url.startswith("postgresql+psycopg://"):

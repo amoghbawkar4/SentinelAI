@@ -49,6 +49,13 @@ def get_workspace_user(user: User = Depends(get_current_user)) -> User:
     return user
 
 
+def get_document_uploader(user: User = Depends(get_current_user)) -> User:
+    allowed_roles = {"manager", "hr", "payroll administrator", "security analyst"}
+    if not user.role or user.role.name.casefold() not in allowed_roles:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient permissions")
+    return user
+
+
 def get_administrator_user(user: User = Depends(get_current_user)) -> User:
     if not user.role or user.role.name.casefold() != ADMINISTRATOR_PORTAL_ROLE:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient permissions")

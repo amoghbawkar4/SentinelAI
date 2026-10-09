@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import JSONResponse
 
-from app.api.routes import auth, audit_logs, dashboard, health, roles, security_events, settings as settings_routes, users, workspace
+from app.api.routes import auth, audit_logs, dashboard, documents, health, roles, security_events, settings as settings_routes, users, workspace
 from app.core.config import settings
 from app.database.init_db import init_db
 from app.middleware.exception_handler import ExceptionHandlerMiddleware
@@ -31,6 +31,7 @@ app.include_router(audit_logs.router, prefix="/api/v1/audit-logs", tags=["audit-
 app.include_router(security_events.router, prefix="/api/v1/security-events", tags=["security-events"])
 app.include_router(dashboard.router, prefix="/api/v1/dashboard", tags=["dashboard"])
 app.include_router(workspace.router, prefix="/api/v1/workspace", tags=["workspace"])
+app.include_router(documents.router, prefix="/api/v1/documents", tags=["documents"])
 app.include_router(health.router, prefix="/api/v1", tags=["health"])
 
 @app.exception_handler(RequestValidationError)

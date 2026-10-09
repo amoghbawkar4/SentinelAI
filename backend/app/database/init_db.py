@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.core.demo_users import DEMO_ROLES, DEMO_USERS
 from app.database.base import Base
 from app.database.session import SessionLocal, engine
-from app.models import audit_log, conversation, permission, role, role_permission, security_event, setting, token, user, user_role
+from app.models import audit_log, conversation, document, permission, role, role_permission, security_event, setting, token, user, user_role
 from app.models.role import Role
 from app.models.audit_log import AuditLog
 from app.models.token import RefreshToken
